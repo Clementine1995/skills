@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design.md Selector"
+  short_description: "Recommend brand design styles from awesome-design-md"
+  default_prompt: "Use $design-md-selector to recommend suitable brand design styles for this page idea."

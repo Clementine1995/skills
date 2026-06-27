@@ -1,0 +1,4 @@
+interface:
+  display_name: "Vercel Geist Design"
+  short_description: "Apply Vercel Geist design system guidance"
+  default_prompt: "Use $vercel-geist-design to design a developer-focused interface with Geist tokens."
