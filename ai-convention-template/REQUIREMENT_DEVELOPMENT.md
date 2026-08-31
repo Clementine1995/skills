@@ -4,7 +4,7 @@
 
 本文件定义单项需求从只读核查、业务确认、实施拆分、编码验证到环境晋级和最终收口的文档标准，并提供可复制模板。
 
-需求文档保存稳定业务合同、当前事实、确认决策、实施边界和可追溯证据；不保存聊天流水、临时推理、一次性日志、真实敏感数据或重复命令。
+需求文档保存已确认的目标业务合同、决策、实施边界和可追溯证据；当前实现或运行事实只记录带时间和来源的核查快照，不保存聊天流水、临时推理、一次性日志、真实敏感数据或重复命令。
 
 ## 何时必须使用
 
@@ -23,12 +23,14 @@
 普通需求使用一份文档覆盖全流程。复杂需求使用三层结构：
 
 ```text
-总规格：当前最终业务合同和全局状态的单一事实来源
+总规格：当前已确认的目标业务合同和需求内状态
   -> 步骤或实施单元：每批目标、基线、文件落点和完成条件
   -> 真实验收清单：环境、授权、动作、停止条件和证据
 ```
 
 具体启动、Git、数据库和发布命令只引用 `DEV_WORKFLOW.md` 的章节，不复制到需求文档。
+
+需求文档属于需求追溯材料，不定义默认智能体规则，也不自动代表当前实现或运行事实。当前现状必须按适用范围由代码、匹配测试、`README.md`、指定的当前事实文档和执行前只读核查支持；这些证据与需求文档不一致时先报告差异，不用阶段材料覆盖现状。目标合同只有在实现和匹配验证完成后才可标记为已交付。
 
 推荐路径：
 
@@ -199,6 +201,8 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 
 ## 4. 当前事实与实际调用链
 
+本节是本次核查时点的证据摘要，不是覆盖代码、测试或最新运行现场的第二套事实来源；事实变化后更新负责该事实的根目录文档，并同步本需求状态。
+
 ### 4.1 当前流程
 
 ```text
@@ -324,6 +328,15 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 - 敏感数据处理：{{sensitive_data_handling}}
 - 权限与鉴权：{{authorization_and_authentication}}
 
+### 6.6 运行时与基础设施生命周期
+
+- 常驻进程、监听器或后台线程的生命周期所有者：{{resident_process_lifecycle_owner_or_none}}
+- 启动、停止、恢复和重复启动语义：{{runtime_start_stop_recovery_semantics}}
+- 状态、健康或自检入口是只读观测还是运行操作：{{status_health_endpoint_semantics}}
+- 数据库、消息系统、缓存或对象存储的生命周期与标准发布边界：{{external_infrastructure_lifecycle_boundary}}
+
+没有常驻进程或外部基础设施时删除不适用项，不为模板完整性虚构运行时能力。
+
 ## 7. 影响清单
 
 只列当前需求直接影响项；没有则写“无”。
@@ -334,6 +347,7 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 | 服务 | {{service_change_type}} | `{{service_file}}` | {{service_change}} | {{service_acceptance}} |
 | client/adapter | {{client_change_type}} | `{{client_file}}` | {{client_change}} | {{client_acceptance}} |
 | 模型或数据 | {{data_change_type}} | `{{model_table_or_event}}` | {{data_change}} | {{data_acceptance}} |
+| 运行或基础设施 | {{runtime_infrastructure_change_type}} | `{{runtime_process_or_resource}}` | {{runtime_infrastructure_change}} | {{runtime_infrastructure_acceptance}} |
 | 测试 | {{test_change_type}} | `{{test_file}}` | {{test_change}} | {{test_acceptance}} |
 | 文档或发布 | {{doc_change_type}} | `{{doc_or_workflow_file}}` | {{doc_change}} | {{doc_acceptance}} |
 
@@ -380,6 +394,8 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 
 至少按风险覆盖：正常流程、重复或幂等、边界、失败保护、事务、旧链路回归和安全边界。
 
+自动化测试应隔离真实数据库、消息 Broker、缓存、对象存储和外部网络；确需使用隔离集成环境时，在 9.2 节按真实联调记录资源身份、授权和影响。
+
 ### 9.2 真实联调计划
 
 - 是否需要：{{real_integration_required}}
@@ -413,6 +429,7 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 | 数据库或迁移 | {{database_change_environment}} | 写 | {{database_scope}} | {{database_change_authorization_model}} | {{database_authorization_status}} |
 | 真实接口或后台任务 | {{real_write_environment}} | 写/状态变化 | {{business_scope}} | {{real_write_authorization_model}} | {{real_write_authorization_status}} |
 | 服务启停或部署 | {{service_operation_environment}} | 状态变化 | {{service_scope}} | {{service_operation_authorization_model}} | {{service_operation_authorization_status}} |
+| 最终环境直接修复（如允许） | {{direct_final_edit_environment}} | 写/状态变化 | {{direct_final_edit_scope}} | 逐次明确授权并引用 `DEV_WORKFLOW.md` 的可选流程 | {{direct_final_edit_authorization_status}} |
 
 没有对应能力时删除整行，不保留误导性授权项。
 
@@ -443,6 +460,7 @@ docs/requirements/{{requirement_id}}-{{requirement_name}}/
 - 结果：{{completed_partial_or_blocked}}
 - 实际修改：{{actual_changes}}
 - 与计划偏差：{{plan_deviation_or_none}}
+- 业务代码配套核对：审计或可观测性={{audit_observability_check}}；职责注释或稳定说明={{responsibility_documentation_check}}；匹配测试={{matching_test_check}}；没有业务代码改动时写“不适用”
 - 定向测试：{{targeted_test_command_identity_date_and_result}}
 - 回归、全量和静态检查：{{regression_full_static_results}}
 - 真实联调：{{real_integration_result_or_not_run}}

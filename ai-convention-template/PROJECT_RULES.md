@@ -41,56 +41,64 @@
 
 填写方向：主工程与独立服务、前后端、插件、脚本、生成物或第三方代码的所有权和运行时边界。
 
+### 常驻进程与基础设施生命周期
+
+3. {{resident_process_lifecycle_rule}}
+4. {{status_or_health_endpoint_semantics_rule}}
+5. {{external_infrastructure_lifecycle_rule}}
+
+填写方向：常驻监听器、调度器和后台线程由谁唯一启动、停止和恢复；状态或健康入口是只读观测还是运行操作；数据库、消息系统、缓存和对象存储是否属于标准应用发布的生命周期。项目没有对应能力时删除本节。
+
 ### 分层与依赖方向
 
-3. {{layer_dependency_rule_1}}
-4. {{layer_dependency_rule_2}}
+6. {{layer_dependency_rule_1}}
+7. {{layer_dependency_rule_2}}
 
 填写方向：允许和禁止的依赖方向、数据库访问层、领域层、接口层，以及跨层调用入口。
 
 ### 入口与外部调用
 
-5. {{official_entry_rule}}
-6. {{external_call_boundary_rule}}
+8. {{official_entry_rule}}
+9. {{external_call_boundary_rule}}
 
 填写方向：正式入口白名单、禁止入口、HTTP/RPC/消息/文件调用必须经过的 adapter 或 client 层。
 
 ### 数据、状态与事务
 
-7. {{data_integrity_rule}}
-8. {{state_transition_rule}}
-9. {{transaction_boundary_rule}}
+10. {{data_integrity_rule}}
+11. {{state_transition_rule}}
+12. {{transaction_boundary_rule}}
 
 填写方向：业务主键、软删除、必填失败证据、幂等、并发、状态机和事务提交边界。
 
 ### 文件与模块结构
 
-10. {{module_naming_or_location_rule}}
-11. {{generated_or_temporary_file_rule}}
+13. {{module_naming_or_location_rule}}
+14. {{generated_or_temporary_file_rule}}
 
 填写方向：特定目录允许的文件模式、禁止的泛指模块、生成文件和临时产物边界。
 
 ### 可观测性
 
-12. {{trace_identity_rule}}
-13. {{audit_or_log_rule}}
+15. {{trace_identity_rule}}
+16. {{audit_or_log_rule}}
 
-填写方向：链路追踪标识、日志上下文、审计事件、敏感信息脱敏和跨层关联要求。
+填写方向：链路追踪标识由哪个权威入口生成、哪些下游必须复用已有标识、日志上下文、审计事件、敏感信息脱敏和跨层关联要求。
 
 ### 数据库结构与迁移
 
-14. {{schema_change_entry_rule}}
-15. {{migration_consistency_rule}}
+17. {{schema_change_entry_rule}}
+18. {{migration_consistency_rule}}
 
 填写方向：唯一结构变更入口、ORM/Schema/DDL/迁移的一致性和验证要求。项目没有数据库时删除本节。
 
 ### 测试与构建边界
 
-16. {{architecture_test_location_rule}}
-17. {{test_isolation_rule}}
-18. {{build_artifact_rule}}
+19. {{architecture_test_location_rule}}
+20. {{test_isolation_rule}}
+21. {{build_artifact_rule}}
 
-填写方向：架构测试目录、真实网络和数据库隔离、生成制品来源与完整性。
+填写方向：架构测试目录、真实网络、数据库、消息系统、缓存和对象存储隔离，以及生成制品来源与完整性。
 
 ## 红线验证映射
 

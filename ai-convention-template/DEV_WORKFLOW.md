@@ -6,6 +6,8 @@
 
 授权边界见 `AGENTS.md`，协作和证据见 `AI_COLLABORATION.md`，环境身份摘要见 `README.md`。
 
+`docs/` 下的需求、设计和阶段材料只能引用本文件章节，不得替代本文件命令、根目录当前事实说明或执行前现场核查。
+
 ## 模板使用安全
 
 - 本文件中的 `{{...}}` 是不可执行占位符。实例化前禁止复制运行任何未完全替换的命令块。
@@ -127,9 +129,13 @@
 
 长驻服务已运行或本轮发生重启时，只有健康检查明确返回正确身份后才能继续真实联调。命令行、库或批处理项目按其可观察结果和资源身份定义等价门禁。
 
+必须明确状态、健康或自检入口是只读观测，还是会启动、重启、修复进程或改变业务状态。具备操作副作用的入口不得伪装成健康检查，必须单列命令、影响、授权和成功标准。
+
 ## 自动化验证
 
 自动化测试必须使用 `{{automated_test_environment_or_config}}`，隔离策略为 `{{automated_test_isolation_policy}}`。
+
+除非本节显式定义了隔离的集成环境、资源身份和授权，自动化验证不得连接、创建、启动、重启或清空真实数据库、消息 Broker、缓存、对象存储或其他外部基础设施；对应 client 使用替身、Mock transport 或进程内测试实现。
 
 ### 定向测试
 
@@ -394,6 +400,23 @@ final_environment_identity={{final_environment_identity_value}}
 
 默认不运行后台任务、不调用真实写接口、不执行线上数据变更；这些动作即使属于同一需求也需要单独授权和证据。
 
+## 可选：最终环境直接修复
+
+默认禁止在最终环境工作区或远端主机直接修改业务代码。只有项目真实采用此路径时才保留本节，并填写全部项目：
+
+- 唯一工作区、代码线或受控编辑入口：`{{direct_final_environment_edit_entry}}`。
+- 允许的故障和文件范围：{{direct_final_environment_edit_scope}}。
+- 逐次授权、审批和审计身份：{{direct_final_environment_edit_authorization}}。
+- 修改前工作区、目标环境和实际配置门禁：{{direct_final_environment_edit_preflight}}。
+- 修改后定向测试、回归、差异检查和运行验收：{{direct_final_environment_edit_validation}}。
+- 提交、推送、主开发线回流和后续标准发布要求：{{direct_final_environment_edit_reconciliation}}。
+
+```text
+{{direct_final_environment_edit_commands}}
+```
+
+部署、重启或线上排障授权不包含直接修改授权。任一字段未定义、现场与门禁不符、存在用户未提交修改或无法保证回流时停止；项目不允许此路径时删除本节。
+
 ## 制品交付与远端部署约束
 
 - 标准交付或部署入口：`{{standard_delivery_or_deployment_entry}}`。
@@ -402,6 +425,7 @@ final_environment_identity={{final_environment_identity_value}}
 - 执行前先只读检查制品存在性与摘要、签名或来源、目标当前身份、容量或配额、发布锁、平台处理状态、track 或 rollout 状态；目录式部署再核对 staging、previous 和正式目录。
 - 标准入口是否构建制品、安装依赖、创建运行资源或执行迁移：{{standard_delivery_or_deployment_capabilities}}。
 - 不属于标准入口的首次初始化、基础设施变化、商店配置变化或专项运行操作必须有独立 runbook 和授权。
+- 标准应用发布必须明确是否触碰数据库、消息 Broker、缓存、对象存储等外部基础设施；未明确列入能力时，不得创建、重建、重启、清空或轮换其配置和凭据。
 
 ## 发布后检查
 
