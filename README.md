@@ -1,6 +1,7 @@
 # Codex Skills
 
-Personal Codex skills for design-system selection and UI style guidance.
+Personal Codex skills and templates: design-system selection, UI style
+guidance, and AI project governance documents.
 
 ## Skills
 
@@ -43,6 +44,19 @@ Use $vercel-geist-design to design a developer-focused dashboard with Geist toke
 
 The skill keeps the core workflow compact and stores the full light-theme reference in
 `vercel-geist-design/references/geist-light-theme.md`.
+
+### ai-convention-template
+
+A copy-ready governance document pack for AI-assisted project development:
+authorization boundaries, architecture red lines, engineering style, task
+tiers with evidence rules, a single executable-command source, and a
+requirement development template.
+
+Use it when a project needs AI agents to follow explicit authorization,
+verification, and release gates. Copy the seven Markdown files into the
+project root and instantiate them by following
+`ai-convention-template/TEMPLATE_USAGE.md`; this pack is consumed by copying,
+not installed as a runtime skill.
 
 ## Usage
 
